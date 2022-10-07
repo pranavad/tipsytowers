@@ -30,7 +30,6 @@ void initializeWorkSpace(KOMO& komoObject, mlr::KinematicWorld& kinWorld, string
     komoObject.displayCamera().focus(0, 0, 1.);
     komoObject.displayCamera().upright();
 
-    // explicitly active certain collision computations (by SWIFT)
     komoObject.MP->world.swift().deactivate(komoObject.MP->world.getShapeByName("table"));
 }
 

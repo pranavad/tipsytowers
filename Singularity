@@ -23,6 +23,7 @@ apt-get -y install wget \
                    git  \
                    curl \
                    gdb \
+                   libopencv-dev \
                    libgtk2.0-dev  \
                    pkg-config  \
                    libavcodec-dev  \
@@ -65,7 +66,7 @@ update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
 
 # set up poetry (package manager for python)
 export POETRY_HOME=/poetry
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+curl -sSL https://install.python-poetry.org | python
 chmod +x /poetry/bin/*
 
 

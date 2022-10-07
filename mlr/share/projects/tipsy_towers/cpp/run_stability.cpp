@@ -57,15 +57,13 @@ void initializeWorkSpace(KOMO& komoObject, mlr::KinematicWorld& kinWorld, string
     komoObject.displayCamera().focus(0, 0, 1.);
     komoObject.displayCamera().upright();
 
-    // explicitly active certain collision computations (by SWIFT)
     komoObject.MP->world.swift().deactivate(komoObject.MP->world.getShapeByName("table"));
 }
 
 
-void simulateWorld(mlr::KinematicWorld& kinWorld,
-                   vector<string>& blockNamesList, vector<string>& grabbedBlockNamesList) {
+void simulateWorld(mlr::KinematicWorld& kinWorld, vector<string>& blockNamesList) {
 
-    double seconds = 2.;
+    double seconds = 1.;
 
     kinWorld.gl().camera.setPosition(-5.,-1.,2.);
     kinWorld.gl().camera.focus(0,0,1.);
@@ -77,10 +75,6 @@ void simulateWorld(mlr::KinematicWorld& kinWorld,
 
         string blockName(b->name);
         if(!isStringInList(blockNamesList, blockName)) continue;
-        if(!isStringInList(grabbedBlockNamesList, blockName)) {
-            b->type = mlr::BT_dynamic;
-            for(mlr::Joint *j:b->inLinks) j->type=mlr::JT_free;
-        }
     }
 
     kinWorld.qdim.clear();
@@ -90,11 +84,11 @@ void simulateWorld(mlr::KinematicWorld& kinWorld,
     #endif
 
     for(uint i = 0; i < seconds * 10; i++){
-        kinWorld.physx().step(.02);
+        kinWorld.physx().step(.01);
     }
 
     for(uint i = 0; i < seconds * 90; i++){
-        kinWorld.physx().step(.02);
+        kinWorld.physx().step(.01);
         #if WATCH_STABILITY
         kinWorld.watch();
         #endif
@@ -118,8 +112,6 @@ int main(int argc,char** argv){
 
     string filePath = argv[argv_index_counter++];
     string blockNamesString = argv[argv_index_counter++];  // names of all the blocks in the plan
-//    string grabbedBlockNamesString = argv[argv_index_counter++];
-    string outFilePath = argv[argv_index_counter++];
 
     KOMO komoObject;
     komoObject.verbose = 0;
@@ -130,11 +122,7 @@ int main(int argc,char** argv){
     vector<string> blockNamesList;
     split(blockNamesString, PLAN_SEPARATOR, blockNamesList);
 
-    vector<string> grabbedBlockNamesList;
-//    split(grabbedBlockNamesString, PLAN_SEPARATOR, grabbedBlockNamesList);
-
-    simulateWorld(kinWorld, blockNamesList, grabbedBlockNamesList);
-    if (outFilePath.length() > 2) printOutGFile(kinWorld, outFilePath);
+    simulateWorld(kinWorld, blockNamesList);
 
     return 0;
 }

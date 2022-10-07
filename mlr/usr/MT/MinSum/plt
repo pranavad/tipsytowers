@@ -1,3 +1,0 @@
-# file format: sweep node totalCost global-state-for-all-nodes
-
-plot 'z.MinSum' us 3 w l

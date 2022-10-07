@@ -1,3 +1,0 @@
-ors_rt_r_elbow_flex_joint:
-  type: my_controller_pkg/MyControllerPlugin
-  joint_name: r_elbow_flex_joint

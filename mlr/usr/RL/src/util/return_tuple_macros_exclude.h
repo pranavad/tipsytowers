@@ -1,2 +1,0 @@
-#undef TN
-#undef T
