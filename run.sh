@@ -26,7 +26,7 @@ printf "\nExecuting: %s\n" "${COMMAND}"
 printf "=%.0s"  $(seq 1 79)
 printf "\n"
 ${SING} ${BS} ${CONT} bash -c "source ${ENV['env']}/bin/activate \
-        && cd ${PWD}/mlr/share/projects/integrated_model \
+        && cd ${PWD}/mlr/share/projects/tipsy_towers \
         && exec $COMMAND \
         && cd /project \
         && deactivate"

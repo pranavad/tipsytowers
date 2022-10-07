@@ -68,8 +68,8 @@ fi
 ## ==========================================================================
 ## ------------------------- cpp setup ---------------------------------- ##
 ## ==========================================================================
-if [[ "$*" =~ "python" ]] || [[ "$*" =~ "all" ]];then
-    echo_blue "Setting up Python venv..."
+if [[ "$*" =~ "cpp" ]] || [[ "$*" =~ "all" ]];then
+    echo_blue "Setting up CPP venv..."
     
     singularity exec "${ENV[cont]}" bash -c "cd mlr/share && make"
     singularity exec "${ENV[cont]}" bash -c "cd mlr/share/projects/tipsy_towers && make"
