@@ -33,7 +33,7 @@ fi
 ## ==========================================================================
 if [[ "$*" =~ "cont_pull" ]] || [[ "$*" =~ "all" ]];then
     echo "Pulling singularity container..."
-    wget "" -O "${ENV[cont]}"
+    wget "https://yale.box.com/shared/static/vja3gphjjyj39bz2236nd4qnon6kc4yy.sif" -O "${ENV[cont]}"
 elif [[ "$*" =~ "cont_build" ]];then
     echo "Building singularity container..."
     SINGULARITY_TMPDIR=/var/tmp sudo -E singularity build "${ENV[cont]}" Singularity
