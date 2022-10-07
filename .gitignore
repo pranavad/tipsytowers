@@ -52,6 +52,7 @@ __pycache__/
 Manifest.toml
 
 */bin/*
+*/build/*
 *.egg-info
 
 env/
@@ -62,6 +63,7 @@ poetry.lock
 #####################
 .idea
 
+tmp/
 library/
 z.AnyTimeAugmentedLagrangian
 z.SquaredPenaltyFixed
