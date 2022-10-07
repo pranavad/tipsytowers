@@ -1,0 +1,11 @@
+--- PhysX/Include/foundation/PxPreprocessor_org.h	2014-02-27 03:42:06.000000000 +0100
++++ PhysX/Include/foundation/PxPreprocessor.h	2014-05-12 13:46:17.902003218 +0200
+@@ -345,7 +345,7 @@ template <class T> PX_CUDA_CALLABLE PX_I
+ 
+ struct PxPackValidation { char _; long long a; };
+ 
+-#if !defined(PX_APPLE)
++#if 0 //!defined(PX_APPLE)
+ PX_COMPILE_TIME_ASSERT(PX_OFFSET_OF(PxPackValidation, a) == 8);
+ #endif
+ 

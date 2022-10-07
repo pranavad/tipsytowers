@@ -1,0 +1,15 @@
+sudo apt-get install \
+build-essentials \
+realpath \
+freeglut3-dev \
+gnuplot \
+libf2c2-dev \
+libqhull-dev \
+liblapack-dev \
+freeglut3-dev \
+libann-dev
+
+make
+
+try to run test/array/x.exe
+perhaps have a look at doc/array_doc/index.html

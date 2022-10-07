@@ -1,0 +1,65 @@
+#! /bin/sh
+
+# Fail early. Abort on any error!
+set -e
+
+## parameters for this install
+TMP=/tmp
+FILE=g4track_lib_dist-0.0.2.tar.gz
+SRC_PATH=g4track_lib_dist-0.0.2
+URL=ftp://ftp.polhemus.com/pub/G4/G4_Linux/$FILE
+THIS_PATH=$PWD
+
+[ -z $MLR_LIBPATH ] && MLR_LIBPATH=/home/lib
+
+echo "*** Installing" $SRC_PATH "into" $MLR_LIBPATH
+echo
+
+## download
+echo -n "  * Checking for directory " $TMP "-> download"
+read -p " -- [Enter] to continue..." yn
+if [ ! -f $FILE ] ; then
+  wget $URL
+  mv $FILE $TMP
+  if [ ! -f $TMP/$FILE ]; then
+    echo "Automatic Download failed. You need to download manually and store it
+    in $TMP/$FILE"
+    exit
+  fi
+fi
+
+## check existance of lib path
+echo -n "  * Checking for directory" $MLR_LIBPATH
+read -p " -- [Enter] to continue..." yn
+if [ ! -d $MLR_LIBPATH ] ; then
+  # only root can create the folder in /home
+  sudo mkdir -p $MLR_LIBPATH
+  # but everybody needs access to /home/lib
+  sudo chmod o+r+w+x $MLR_LIBPATH
+  # and also /home/lib/lib
+  mkdir -p $MLR_LIBPATH/lib
+fi
+
+## delete & unpack
+echo -n "  * Delete" $MLR_LIBPATH/src/$SRC_PATH "and unpack" $TMP/$FILE "?"
+read -p " -- y/[n]? " yn
+case $yn in
+    y|Y)
+	mkdir -p $MLR_LIBPATH/src
+	cd $MLR_LIBPATH/src
+	sudo rm -Rf $SRC_PATH
+	tar xvzf $TMP/$FILE
+	;;
+    *) ;;
+esac
+
+## install
+echo -n "  * Installing into" $MLR_LIBPATH/include "and" $MLR_LIBPATH/lib
+read -p " -- [Enter] to continue..." yn
+cd $MLR_LIBPATH/src/$SRC_PATH
+#./configure --help
+./configure --prefix=$MLR_LIBPATH
+sudo make install sysconfdir=/etc
+#export MANPATH=$MANPATH:$MLR_LIBPATH/share
+
+

@@ -1,0 +1,6 @@
+share/Makefile
+share/build
+share/README.md
+share/README.mlr.md
+share/COPYING
+share/INSTALL_ALL_UBUNTU_PACKAGES.sh

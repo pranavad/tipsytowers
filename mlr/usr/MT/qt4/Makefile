@@ -1,0 +1,11 @@
+BASE = ../../../share
+
+QT = 1
+
+PREOBJS = win_ui.h win_moc.cpp
+OBJS = win_moc.o main.o
+LIBS += -lpthread
+
+CLEAN = *_moc.cpp *_ui.h MT.log
+
+include $(BASE)/build/generic.mk

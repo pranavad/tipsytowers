@@ -1,0 +1,116 @@
+#include <Ors/ors.h>
+#include <Control/taskController.h>
+
+// ============================================================================
+// helper function to execute the motion problem
+
+void run(TaskController& MP, mlr::KinematicWorld& world) {
+  arr q, qdot;
+  world.getJointState(q, qdot);
+
+  double tau=0.01;
+  for(uint i=0;i<1000;i++){
+    MP.setState(q, qdot);
+//    world.stepPhysx(tau);
+
+    for(uint tt=0;tt<10;tt++){
+      arr a = MP.operationalSpaceControl();
+      q += .1*tau*qdot;
+      qdot += .1*tau*a;
+    }
+    world.watch(false, STRING(i));
+  }
+}
+
+// ============================================================================
+
+void test_reach() {
+  mlr::KinematicWorld world("man.ors");
+  TaskController MP(world, false);
+
+  MP.addPDTask("endeff1", .2, .8, posTMT, "handR", NoVector, "rightTarget");
+  MP.addPDTask("endeff2", .2, .8, posTMT, "handL", NoVector, "leftTarget");
+
+  run(MP, world);
+}
+
+// ============================================================================
+
+void test_quatTMT() {
+  mlr::KinematicWorld world("man.ors");
+  TaskController MP(world, false);
+
+  auto effOrientationL = MP.addPDTask("orientationL", 1., .8, quatTMT, "handL", {0, 0, 0});
+  effOrientationL->y_ref = ARR(1, 0, 0, 0);
+
+  auto effOrientationR = MP.addPDTask("orientationR", 1., .8, quatTMT, "handR", {0, 0, 0});
+  effOrientationR->y_ref = ARR(0, 1, 0, 0);
+
+  run(MP, world);
+}
+
+// ============================================================================
+
+void test_qSingleTMT() {
+  mlr::KinematicWorld world("man.ors");
+  TaskController MP(world, false);
+
+  int jointID = world.getJointByBodyNames("waist", "back")->qIndex;
+  auto task = MP.addPDTask("rotateArm", .3, .8, new TaskMap_qItself(jointID, world.q.N));
+  task->setTarget({.8});
+
+  jointID = world.getJointByBodyNames("lhip", "lup")->qIndex;
+  auto task2 = MP.addPDTask("rotateArm", .3, .8, new TaskMap_qItself(jointID, world.q.N));
+  task2->setTarget({-1.8});
+
+  run(MP, world);
+}
+
+// ============================================================================
+
+void checkAnalytics(){
+  mlr::KinematicWorld world("man.ors");
+  arr q, qdot;
+  world.getJointState(q, qdot);
+
+  TaskController MP(world, false);
+  MP.qNullCostRef.setGains(1.,10.);
+  CtrlTask *t=MP.addPDTask("endeff1", .2, .9, posTMT, "handR", NoVector, "rightTarget");
+
+  q(18)+=1.1;
+  MP.setState(q, qdot);
+
+  ofstream fil("z.approach");
+  mlr::arrayBrackets="  ";
+  double tau=0.01;
+  for(uint i=0;i<100;i++){
+    MP.setState(q, qdot);
+
+    for(uint tt=0;tt<10;tt++){
+      arr a = MP.operationalSpaceControl();
+      q += .1*tau*qdot;
+      qdot += .1*tau*a;
+      MP.setState(q, qdot);
+      fil <<(i*tau+tt*0.1*tau) <<' ' <<t->y <<length(t->y - t->y_ref) <<endl;
+    }
+//    fil <<i*tau <<' ' <<q <<endl;
+
+    world.watch(false, STRING(i));
+  }
+  fil.close();
+  gnuplot("plot 'z.approach' us 1:3, '' us 1:(-$4), '' us 1:5, '' us 1:2", false, true);
+}
+
+// ============================================================================
+int main(int argc,char **argv)
+{
+  mlr::initCmdLine(argc,argv);
+
+//   test_reach();
+//   checkAnalytics();
+//   test_quatTMT();
+  test_reach();
+  test_qSingleTMT();
+
+  return 0;
+}

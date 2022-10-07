@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#############################################################################
+# This script downloads, compiles and installs libfreenect so that it can be
+# used from within the MLR project.
+#
+# It also starts a freenect demo. Make sure the  kinect is pluged in.
+#############################################################################
+
+
+# Fail early. Abort on any error!
+set -e
+
+echo "Downloading..."
+SRCDIR=$MLR_LIBPATH/src
+[ -d $SRCDIR ] || mkdir $MLR_LIBPATH/src
+cd $MLR_LIBPATH/src
+rm -rf libfreenect
+git clone git://github.com/OpenKinect/libfreenect.git
+cd libfreenect
+git reset --hard d071095a3e671c47ffbab4580a620edb33fb9ee4
+
+echo "Building..."
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=debug
+make
+
+echo "Installing..."
+sudo make install
+sudo ldconfig /usr/local/lib64/
+
+echo "DONE"
+echo
+echo "You can start 'glview' or 'glpclview' to test if libfreenect is working"
+
+# vim:ft=sh:

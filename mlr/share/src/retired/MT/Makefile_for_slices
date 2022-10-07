@@ -1,0 +1,11 @@
+CXX=clang++
+BASE   = $(shell realpath ../..)
+NAME   = $(shell basename $(BASE))
+OUTPUT = lib$(NAME).so
+
+CONFIGMODE = mlrlib
+
+OBJS  = $(shell find . -maxdepth 1 -name '*.cpp' )
+OBJS := $(OBJS:%.cpp=%.o)
+
+include $(BASE)/make-generic

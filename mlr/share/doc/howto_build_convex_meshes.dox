@@ -1,0 +1,61 @@
+/** \page howto_convex_meshes Convex (Sub)Meshes and ORS
+
+This document desrcibes how to handle convex submeshes and how they are handled
+in ORS.
+
+Usually, physics engines are able to peform efficent collision checking if the
+meshse consist of convex parts.  ORS does not require convex meshses.
+Some mesh fileformats natively support groups (and these groups can be convex
+submeshes).  One can decompose mesh files into convex sub meshes (described
+below).  ORS and therefore some pyhsics engines then support efficent collision
+checking.
+
+
+<b> Current state [2013-10-31 Thu]: </b>
+
+If an .obj file contains groups, the groups are interpreted as convex sub
+meshses.  If one uses the ORS_physX interface physx is able to use efficient
+collision detection.
+
+Summary:
+
+ - obj supports submeshes
+
+ - using a obj file automatically creates a Shape+Mesh for every submesh
+
+ - physx can use the convex submeshes efficently
+
+
+\section how Decompose Meshes
+
+To decompose a mesh file (the format does not matter) call the
+`decompose_meshes.py` file in `share/bin/`:
+\code
+./decompose_meshes.py MESHFILE
+\endcode
+
+For more infos about the decomposition `decompose_ply.py --help` or read the
+source of the script.
+
+
+\section random Random Notes
+
+The toool `hacd` is a custom version of the program "Hierarchical Approximate
+Convex Decomposition".  As opposed to the original it outputs .obj files.
+The code is in `gitolite@sully.informatik.uni-stuttgart.de:HACD.git`
+
+TODO support other file formats
+
+
+\section ref References
+
+HACD - Hierarchical Approximate Convex Decomposition of 3D Meshes.
+- http://sourceforge.net/projects/hacd/
+- http://kmamou.blogspot.de/2011/10/hacd-optimization.html
+- http://kmamou.blogspot.de/2011/11/hacd-parameters.html
+
+meshconv - 3d model converter
+- http://www.cs.princeton.edu/~min/meshconv/
+
+*/
+// vim: syntax=cpp.doxygen:ts=6:sw=2
