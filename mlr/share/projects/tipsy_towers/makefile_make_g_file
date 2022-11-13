@@ -1,9 +1,9 @@
 BASE = ../..
 
-OBJS = cpp/run_stability.o
+OBJS = cpp/make_g_files.o
 
 DEPEND = Motion Core Geo Ors Gui Optim
 
-OUTPUT = run_stability.exe
+OUTPUT = make_g_files.exe
 
 include $(BASE)/build/generic.mk

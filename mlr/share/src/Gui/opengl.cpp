@@ -108,8 +108,8 @@ void glStandardScene(void*) {
   glStandardLight(NULL);
   //  glDrawFloor(10, .8, .8, .8);
   //  glDrawFloor(10, 1.5, 0.83, .0);
-  glDrawFloor(10., 108./255., 123./255., 139./255.);
-  glDrawAxes(.1);
+  glDrawFloor(20., 108./255., 123./255., 139./255.);
+  //glDrawAxes(.0);
 }
 
 void glColor(int col) {
@@ -278,7 +278,7 @@ void glDrawFloor(float x, float r, float g, float b) {
   glVertex3f(-x, x, 0.);
   glVertex3f(-x, -x, 0.);
   glEnd();
-#if 1
+#if 0
   glColor(.75, .75, .75);
   for(int i=-4; i<=4; i++) {
     glBegin(GL_LINES);
@@ -891,7 +891,7 @@ bool glUI::clickCallback(OpenGL& gl) { NICO }
 //
 
 OpenGL::OpenGL(const char* _title, int w, int h, int posx, int posy)
-  : s(NULL), title(_title), width(w), height(h), reportEvents(false), captureImg(false), captureDep(false), fboId(0), rboColor(0), rboDepth(0){
+  : s(NULL), title(_title), width(w), height(h), reportEvents(false), captureImg(true), captureDep(false), fboId(0), rboColor(0), rboDepth(0){
   //MLR_MSG("creating OpenGL=" <<this);
   Reshape(w,h);
   s=new sOpenGL(this); //this might call some callbacks (Reshape/Draw) already!
@@ -899,7 +899,7 @@ OpenGL::OpenGL(const char* _title, int w, int h, int posx, int posy)
 }
 
 OpenGL::OpenGL(void *container)
-  : s(NULL), width(0), height(0), reportEvents(false), captureImg(false), captureDep(false), fboId(0), rboColor(0), rboDepth(0){
+  : s(NULL), width(0), height(0), reportEvents(false), captureImg(true), captureDep(false), fboId(0), rboColor(0), rboDepth(0){
   s=new sOpenGL(this,container); //this might call some callbacks (Reshape/Draw) already!
   init();
 }

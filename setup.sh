@@ -50,10 +50,12 @@ if [[ "$*" =~ "python" ]] || [[ "$*" =~ "all" ]];then
 
     singularity exec "${ENV[cont]}" bash -c "python -m venv ${ENV[env]}"
     ./run.sh "python -m pip install --upgrade pip"
-    ./run.sh "python -m pip install --no-cache-dir poetry && \
-              source ${ENV[env]}/bin/activate"
-    ./run.sh "poetry install"
-    ./run.sh "python -m pip install click"
+    ./run.sh "source ${ENV[env]}/bin/activate"
+    ./run.sh "python -m pip install pillow"
+    ./run.sh "python -m pip install numpy"
+    ./run.sh "python -m pip install scipy"
+    ./run.sh "python -m pip install sklearn"
+    ./run.sh "python -m pip install matplotlib"
     ./run.sh "python -m pip install click-help-colors"
 fi
 

@@ -192,7 +192,7 @@ struct OpenGL {
   void renderInBack(bool captureImg=true, bool captureDepth=false, int w=-1, int h=-1);
 
   /// @name showing, updating, and watching
-  int update(const char *text=NULL, bool captureImg=false, bool captureDepth=false, bool waitForCompletedDraw=true);
+  int update(const char *text=NULL, bool captureImg=true, bool captureDepth=false, bool waitForCompletedDraw=true);
   int watch(const char *text=NULL);
   int timedupdate(double sec);
   void resize(int w, int h);

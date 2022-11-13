@@ -5,13 +5,13 @@ class NameUtils:
     NAME_RED = "red"
     NAME_YELLOW = "yellow"
     NAME_BLUE = "blue"
-    NAME_MAUVE = "mauve"
-    NAME_EMERALD = "emerald"
 
     NAME_DIFF_B = "b"
     NAME_DIFF_C = "c"
 
-    TEST_STACK_BLOCKS = ["b0", "b1", "b2", "b3", "b4", "c0", "c1", "c2", "c3", "c4"]
+    TABLE = "table"
+
+    NO_BLOCK_ON_TOP = "NO_BLOCK_ON_TOP"
 
 
 class CoreUtils:
@@ -33,6 +33,18 @@ class CoreUtils:
     @staticmethod
     def get_exp_data_dir_path():
         return os.path.join(CoreUtils.get_library_dir_path(), "exp_data")
+
+    @staticmethod
+    def get_exp_fin_files_dir_path():
+        return os.path.join(CoreUtils.get_exp_data_dir_path(), "fin_files")
+
+    @staticmethod
+    def get_init_files_dir_path():
+        return os.path.join(CoreUtils.get_library_dir_path(), "init_files")
+
+    @staticmethod
+    def get_fin_files_dir_path():
+        return os.path.join(CoreUtils.get_library_dir_path(), "fin_files")
 
     @staticmethod
     def get_test_files_data_dir_path():
