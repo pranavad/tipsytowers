@@ -1,5 +1,3 @@
-import subprocess
-
 import numpy as np
 import scipy.stats as stats
 
@@ -46,15 +44,3 @@ def sample_trunc_normal(mu, bound_min, bound_max, sigma=0.5):
     lower = (bound_min - mu) / sigma
     upper = (bound_max - mu) / sigma
     return stats.truncnorm.rvs(lower, upper, loc=mu, scale=sigma, size=1).tolist()[0]
-
-
-def execute_shell_command(command_as_str):
-    popen = subprocess.Popen(command_as_str.split(), stdout=subprocess.PIPE, universal_newlines=True)
-    for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line
-    popen.stdout.close()
-
-    return_code = popen.wait()
-
-    if return_code:
-        raise subprocess.CalledProcessError(return_code, command_as_str)

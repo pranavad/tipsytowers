@@ -4,7 +4,7 @@ import subprocess
 import numpy as np
 import os
 
-from mlr.share.projects.tipsy_towers.utils.compute_utils import sample_trunc_normal, execute_shell_command
+from mlr.share.projects.tipsy_towers.utils.compute_utils import sample_trunc_normal
 from mlr.share.projects.tipsy_towers.utils.constants import CoreUtils
 from mlr.share.projects.tipsy_towers.utils.file_utils import FileUtils
 from mlr.share.projects.tipsy_towers.utils.msg_utils import Msg
@@ -182,9 +182,8 @@ class GFileGenerator:
         counter = 0
         if trial_name in trial_names_special:  # special trials
             if trial_name == "1_1":
-                block_loc_list += GFileGenerator._get_block_loc_124(0, 5, GFileGenerator.FIN_DIST_BETWEEN_BLOCKS, 0.0)
-                block_loc_list += GFileGenerator._get_block_loc_124(0, 5, GFileGenerator.FIN_DIST_BETWEEN_BLOCKS, -0.1)
                 block_loc_list += GFileGenerator._get_block_loc_124(0, 5, GFileGenerator.FIN_DIST_BETWEEN_BLOCKS, 0.1)
+                block_loc_list += GFileGenerator._get_block_loc_124(0, 5, GFileGenerator.FIN_DIST_BETWEEN_BLOCKS, 0.0)
             elif trial_name == "2_1":
                 block_loc_list = GFileGenerator._get_block_loc_124(4, 4, GFileGenerator.FIN_DIST_BETWEEN_BLOCKS)
             elif trial_name == "4_1":
@@ -278,7 +277,7 @@ class GFileGenerator:
         FileUtils.write_content_to_file(out_file_path, g_file_contents)
 
     @staticmethod
-    def _get_block_loc_124(total_horizontal=2, total_vertical=2, distance_between_blocks=0.0, start_block_x=0.0):
+    def _get_block_loc_124(total_horizontal=2, total_vertical=2, distance_between_blocks=0.0, max_block_y=None):
         block_loc = []
 
         block_size = 0.05
@@ -290,18 +289,26 @@ class GFileGenerator:
         if total_horizontal > 0 and total_horizontal % 2 == 0:
             start_block_y = ((block_size / 2) + distance_between_blocks)
 
-        max_block_y = start_block_y + (block_size + distance_between_blocks) * (total_horizontal - 1)
+        if max_block_y is None:
+            max_block_y = start_block_y + (block_size + distance_between_blocks) * (total_horizontal - 1)
 
+        start_block_x = 0.0
         if total_vertical > 0 and total_vertical % 2 == 0:
             start_block_x = ((block_size / 2) + distance_between_blocks)
 
         for _ in range(total_vertical):  # vertical
-            block_loc.append(tuple([start_block_x, max_block_y, 0.022]))
-            block_loc.append(tuple([start_block_x, -max_block_y, 0.022]))
-            if not start_block_x == 0.0:
-                block_loc.append(tuple([-start_block_x, max_block_y, 0.022]))
-                block_loc.append(tuple([-start_block_x, -max_block_y, 0.022]))
-            start_block_x += block_size + distance_between_blocks
+            if max_block_y == 0.0:
+                block_loc.append(tuple([start_block_x, max_block_y, 0.022]))
+                if not start_block_x == 0.0:
+                    block_loc.append(tuple([-start_block_x, max_block_y, 0.022]))
+                start_block_x += block_size + distance_between_blocks
+            else:
+                block_loc.append(tuple([start_block_x, max_block_y, 0.022]))
+                block_loc.append(tuple([start_block_x, -max_block_y, 0.022]))
+                if not start_block_x == 0.0:
+                    block_loc.append(tuple([-start_block_x, max_block_y, 0.022]))
+                    block_loc.append(tuple([-start_block_x, -max_block_y, 0.022]))
+                start_block_x += block_size + distance_between_blocks
 
         for _ in range(total_horizontal):  # horizontal
             block_loc.append(tuple([start_block_x, start_block_y, 0.022]))
@@ -334,7 +341,7 @@ class GFileGenerator:
 
         triple_left = "(0.0,-0.15,0.026)"
         triple_center = "(0.0,0.0,0.026)"
-        triple_right = "(0.0,-0.15,0.026)"
+        triple_right = "(0.0,0.15,0.026)"
         if fin_config == GFileGenerator.FIN_SINGLE:
             g_contents.extend(GFileGenerator._generate_tower(block_names_list, generic_loc))
         elif fin_config == GFileGenerator.FIN_DOUBLE:
@@ -422,7 +429,3 @@ class GFileGenerator:
 if __name__ == '__main__':
     t_blocks = 15
     test_init_file_path = os.path.join(CoreUtils.get_test_files_data_dir_path(), "test_init.g")
-    test_fin_file_path = os.path.join(CoreUtils.get_test_files_data_dir_path(), "test_fin.g")
-    GFileGenerator.generate_trial_g_file(test_init_file_path, test_fin_file_path, "1_2", [t_blocks],
-                                         [GFileGenerator.PURPLE_COLOR], [GFileGenerator.TABLE_CENTER],
-                                         GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_NO_NOISE)
