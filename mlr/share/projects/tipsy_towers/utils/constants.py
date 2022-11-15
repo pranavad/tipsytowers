@@ -21,6 +21,8 @@ class CoreUtils:
     DOT_TXT = ".txt"
     DOT_G = ".g"
     DOT_F_G = "_f.g"
+    DOT_PPM = ".ppm"
+    DOT_F_PPM = "_f.ppm"
 
     @staticmethod
     def get_root_dir_path():

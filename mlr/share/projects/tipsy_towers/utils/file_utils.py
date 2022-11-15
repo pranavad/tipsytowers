@@ -1,6 +1,8 @@
 import csv
 import os
 
+from PIL import Image
+
 from mlr.share.projects.tipsy_towers.utils.block_utils import BlockParams, BlockPosition, BlockQuaternion, \
     BlockShape
 from mlr.share.projects.tipsy_towers.utils.compute_utils import is_close
@@ -119,6 +121,15 @@ class GFileUtils:
         with open(g_file_path, "w") as g_file:
             for line in new_contents:
                 g_file.write(line)
+
+    @staticmethod
+    def convert_ppm_to_png(ppm_file_path, png_file_path):
+        if "ppm" not in os.path.basename(ppm_file_path):
+            Msg.print_error("ERROR [convert_ppm_to_png]: please ensure that you pass a PPM file")
+            return
+
+        ppm_image = Image.open(ppm_file_path)
+        ppm_image.save(png_file_path)
 
 
 class FileUtils:

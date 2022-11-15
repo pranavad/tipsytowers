@@ -45,14 +45,12 @@ int main(int argc,char** argv){
     mlr::KinematicWorld kinWorld;
     initializeWorkSpace(komoObject, kinWorld, filePath);
 
-    kinWorld.gl().camera.setPosition(6.5,0.,4.);
-    kinWorld.gl().camera.focus(-0.4,0,1.);
+    kinWorld.gl().camera.setPosition(5.5,0.,3.5);
+    kinWorld.gl().camera.focus(-0.5,0,1.);
     kinWorld.gl().camera.upright();
     kinWorld.qdim.clear();
     kinWorld.watch(true);
     kinWorld.qdim.clear();
-
-    write_ppm(kinWorld.gl().captureImage,"/home/jakiroshah/Desktop/yalla.ppm",true);
 
     return 0;
 }

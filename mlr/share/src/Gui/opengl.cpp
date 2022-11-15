@@ -383,17 +383,17 @@ void glDrawAxis() {
 }
 
 void glDrawAxes(double scale) {
-  for(uint i=0; i<3; i++) {
-    glPushMatrix();
-    glScalef(scale, scale, scale);
-    switch(i) {
-      case 0:  glColor(.7, 0, 0);  break;
-      case 1:  glColor(0, .7, 0);  glRotatef(90, 0, 0, 1);  break;
-      case 2:  glColor(0, 0, .7);  glRotatef(90, 0, -1, 0);  break;
-    }
-    glDrawAxis();
-    glPopMatrix();
-  }
+//  for(uint i=0; i<3; i++) {
+//    glPushMatrix();
+//    glScalef(scale, scale, scale);
+//    switch(i) {
+//      case 0:  glColor(.7, 0, 0);  break;
+//      case 1:  glColor(0, .7, 0);  glRotatef(90, 0, 0, 1);  break;
+//      case 2:  glColor(0, 0, .7);  glRotatef(90, 0, -1, 0);  break;
+//    }
+//    glDrawAxis();
+//    glPopMatrix();
+//  }
 }
 
 void glDrawSphere(float radius) {

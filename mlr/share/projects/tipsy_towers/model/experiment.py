@@ -1,4 +1,5 @@
 import os
+import random
 
 from mlr.share.projects.tipsy_towers.model.file_generator import GFileGenerator
 from mlr.share.projects.tipsy_towers.utils.constants import NameUtils, CoreUtils
@@ -9,7 +10,8 @@ class ExpType:
 
     @staticmethod
     def get_exp_type(input_string):
-        return ExpType.STABILITY
+        if input_string == ExpType.STABILITY:
+            return ExpType.STABILITY
 
 
 class Experiment:
@@ -38,18 +40,18 @@ class Experiment:
                 total_c_blocks = 8
             elif trial_num == "3":
                 total_b_blocks = 8
-                total_c_blocks = 9
+                total_c_blocks = 7
             elif trial_num == "4":
                 total_b_blocks = 18
             elif trial_num == "5":
-                total_b_blocks = 10
+                total_b_blocks = 9
                 total_c_blocks = 9
             elif trial_num == "6":
-                total_b_blocks = 20
+                total_b_blocks = 12
             elif trial_num == "7":
-                total_b_blocks = 21
+                total_b_blocks = 13
             elif trial_num == "8":
-                total_b_blocks = 22
+                total_b_blocks = 14
 
             block_names = []
             block_name_categories = {}
@@ -70,9 +72,17 @@ class Experiment:
         filename = self.exp_type + CoreUtils.UNDERSCORE + self.exp_trial_num
         return os.path.join(CoreUtils.get_fin_files_dir_path(), filename + CoreUtils.DOT_F_G)
 
-    def _get_temp_fin_file_path(self):
+    def _get_exp_fin_file_path(self):
         filename = self.exp_type + CoreUtils.UNDERSCORE + self.exp_trial_num
         return os.path.join(CoreUtils.get_exp_fin_files_dir_path(), filename + CoreUtils.DOT_F_G)
+
+    def _get_init_image_file_path(self):
+        filename = self.exp_type + CoreUtils.UNDERSCORE + self.exp_trial_num
+        return os.path.join(CoreUtils.get_init_files_dir_path(), filename + CoreUtils.DOT_PPM)
+
+    def _get_fin_image_file_path(self):
+        filename = self.exp_type + CoreUtils.UNDERSCORE + self.exp_trial_num
+        return os.path.join(CoreUtils.get_fin_files_dir_path(), filename + CoreUtils.DOT_F_PPM)
 
     def _init_block_names_list(self):
         self._block_names_list, self._block_categories = Experiment.get_block_names(self.exp_type, self.exp_trial_num)
@@ -81,125 +91,158 @@ class Experiment:
         self._init_block_names_list()
 
     def _run_g_file_generator(self):
-        init_filename = self._get_init_file_path()
-        final_filename = self._get_fin_file_path()
-        temp_final_filename = self._get_temp_fin_file_path()
+        init_file_path = self._get_init_file_path()
+        final_file_path = self._get_fin_file_path()
+        exp_final_file_path = self._get_exp_fin_file_path()
+        init_image_file_path = self._get_init_image_file_path()
+        final_image_file_path = self._get_fin_image_file_path()
         trial_version = self.exp_trial_num.split("_")[1]
 
         block_nums = [self._block_categories[category] for category in self._block_categories.keys()]
-        block_colors = [GFileGenerator.DEFAULT_COLOR]
+        block_colors = random.choice([[GFileGenerator.RED_COLOR], [GFileGenerator.BLUE_COLOR],
+                                      [GFileGenerator.GREEN_COLOR], [GFileGenerator.YELLOW_COLOR],
+                                      [GFileGenerator.PINK_COLOR]])
         if len(self._block_categories.keys()) > 1:
-            block_colors = [GFileGenerator.GREEN_COLOR, GFileGenerator.YELLOW_COLOR]
+            block_colors = random.choice([[GFileGenerator.GREEN_COLOR, GFileGenerator.YELLOW_COLOR],
+                                          [GFileGenerator.RED_COLOR, GFileGenerator.BLUE_COLOR],
+                                          [GFileGenerator.PINK_COLOR, GFileGenerator.YELLOW_COLOR]])
 
-        block_loc = [GFileGenerator.TABLE_CENTER for i in range(len(block_colors))]
+        block_loc = [GFileGenerator.TABLE_CENTER for _ in range(len(block_colors))]
 
         if trial_version == "2":
-            GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+            GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                 init_image_file_path, final_image_file_path,
                                                  self.exp_trial_num, block_nums, block_colors, block_loc,
                                                  GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_NO_NOISE)
         elif trial_version == "3":
-            GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+            GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                 init_image_file_path, final_image_file_path,
                                                  self.exp_trial_num, block_nums, block_colors, block_loc,
                                                  GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_SMALL_NOISE)
         elif trial_version == "4":
-            GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+            GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                 init_image_file_path, final_image_file_path,
                                                  self.exp_trial_num, block_nums, block_colors, block_loc,
                                                  GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_LARGE_NOISE)
         else:
             if self.exp_trial_num == '1_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '1_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '1_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_LARGE_NOISE)
             elif self.exp_trial_num == '2_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '2_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_DOUBLE, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '2_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_DOUBLE, GFileGenerator.FIN_IS_LARGE_NOISE)
             elif self.exp_trial_num == '3_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '3_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '3_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_SMALL_NOISE)
             elif self.exp_trial_num == '4_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '4_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_DOUBLE, GFileGenerator.FIN_IS_SMALL_NOISE)
             elif self.exp_trial_num == '4_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_DOUBLE, GFileGenerator.FIN_IS_LARGE_NOISE)
             elif self.exp_trial_num == '5_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '5_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_SMALL_NOISE)
             elif self.exp_trial_num == '5_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_LARGE_NOISE)
             elif self.exp_trial_num == '6_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '6_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '6_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
-                                                     GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_NO_NOISE)
+                                                     GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_NO_NOISE)
             if self.exp_trial_num == '7_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '7_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '7_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
-                                                     GFileGenerator.FIN_SINGLE, GFileGenerator.FIN_IS_NO_NOISE)
+                                                     GFileGenerator.FIN_TRIPLE, GFileGenerator.FIN_IS_NO_NOISE)
             if self.exp_trial_num == '8_1':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_CUSTOM, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '8_5':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_DOUBLE, GFileGenerator.FIN_IS_NO_NOISE)
             elif self.exp_trial_num == '8_6':
-                GFileGenerator.generate_trial_g_file(init_filename, final_filename, temp_final_filename,
+                GFileGenerator.generate_trial_g_file(init_file_path, final_file_path, exp_final_file_path,
+                                                     init_image_file_path, final_image_file_path,
                                                      self.exp_trial_num, block_nums, block_colors, block_loc,
                                                      GFileGenerator.FIN_DOUBLE, GFileGenerator.FIN_IS_SMALL_NOISE)
 

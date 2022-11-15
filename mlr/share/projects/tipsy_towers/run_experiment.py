@@ -10,6 +10,7 @@ from itertools import repeat
 
 from mlr.share.projects.tipsy_towers.model.experiment import Experiment, ExpType
 from mlr.share.projects.tipsy_towers.utils.constants import CoreUtils
+from mlr.share.projects.tipsy_towers.utils.file_utils import FileUtils, GFileUtils
 
 
 class Trials:
@@ -52,11 +53,18 @@ def run_trial(trial):
 
 
 def run_exp_trial_multiprocess(exp_type):
-    trails_list = get_trials_list(exp_type, ["1_4"])
+    trials_list = get_trials_list(exp_type)
 
     cores = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=cores, initializer=np.random.seed(int(time.time())))
-    pool.starmap(run_trial, zip(trails_list))
+    pool.starmap(run_trial, zip(trials_list))
+
+
+def run_ppm_to_png_converter():
+    for file_path in FileUtils.get_files_in_directory(CoreUtils.get_fin_files_dir_path()):
+        if file_path.endswith(CoreUtils.DOT_PPM):
+            png_file_path = file_path.split(".")[0] + ".png"
+            GFileUtils.convert_ppm_to_png(file_path, png_file_path)
 
 
 @click.command()
@@ -71,6 +79,7 @@ def main(build_only, build_force):
         os.system("make --always-make --silent -f makefile_run_physx")
 
     run_exp_trial_multiprocess(ExpType.STABILITY)
+    run_ppm_to_png_converter()
 
 
 if __name__ == '__main__':
